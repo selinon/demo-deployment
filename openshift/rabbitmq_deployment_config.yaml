@@ -27,6 +27,8 @@ objects:
     to:
       kind: Service
       name: rabbitmq
+    port:
+      targetPort: http
 
 - kind: Service
   apiVersion: v1
@@ -41,6 +43,11 @@ objects:
     - port: 80
       protocol: TCP
       targetPort: 15672
+      name: http
+    - port: 5672
+      protocol: TCP
+      targetPort: 5672
+      name: ampq
     selector:
       service: rabbitmq
 
@@ -66,6 +73,8 @@ objects:
           name: rabbitmq
           ports:
             - containerPort: 15672
+              protocol: TCP
+            - containerPort: 5672
               protocol: TCP
           resources:
             requests:
