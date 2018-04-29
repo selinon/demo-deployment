@@ -51,14 +51,14 @@
 
   - name: "Create API ImageStream template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/image_stream.yaml
+      --filename https://raw.githubusercontent.com/selinon/demo-api/master/openshift/image_stream.yaml
 
   - name: "Create API ImageStream from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/api-imagestream
 
   - name: "Create worker ImageStream template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/templates/image_stream.yaml
+      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/openshift/image_stream.yaml
 
   - name: "Create worker ImageStream from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-imagestream
@@ -67,14 +67,14 @@
 
   - name: "Create API BuildConfig template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/build_config.yaml
+      --filename https://raw.githubusercontent.com/selinon/demo-api/master/openshift/build_config.yaml
 
   - name: "Create API BuildConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/api-buildconfig
 
   - name: "Create worker BuildConfig template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/templates/build_config.yaml
+      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/openshift/build_config.yaml
 
   - name: "Create worker BuildConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-buildconfig
@@ -83,14 +83,14 @@
 
   - name: "Create API DeploymentConfig template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/deployment_config.yaml
+      --filename https://raw.githubusercontent.com/selinon/demo-api/master/openshift/deployment_config.yaml
 
   - name: "Create API DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/api-deploymentconfig
 
   - name: "Create worker DeploymentConfig template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/templates/deployment_config.yaml
+      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/openshift/deployment_config.yaml
 
   - name: "Create worker DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig
