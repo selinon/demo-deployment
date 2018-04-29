@@ -32,7 +32,6 @@ objects:
     selector:
       service: mongo
 
-
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -71,23 +70,18 @@ objects:
             limits:
               memory: "256Mi"
               cpu: "500m"
-              #          readinessProbe:
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 10
-              #            timeoutSeconds: 10
-              #          livenessProbe:
-              #            # TODO: create liveness
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 60
-              #            timeoutSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 10
           volumeMounts:
             - mountPath: /var/lib/mongodb/data/
               name: mongo-volume

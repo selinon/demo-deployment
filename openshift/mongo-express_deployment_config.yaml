@@ -44,7 +44,6 @@ objects:
     selector:
       service: mongo-express
 
-
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -83,23 +82,22 @@ objects:
             limits:
               memory: "256Mi"
               cpu: "500m"
-              #          readinessProbe:
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 10
-              #            timeoutSeconds: 10
-              #          livenessProbe:
-              #            # TODO: create liveness
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 60
-              #            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: '/'
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: '/'
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 10
     test: false
     triggers:
     - type: ConfigChange

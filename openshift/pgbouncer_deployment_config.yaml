@@ -21,8 +21,8 @@ objects:
     labels:
       service: pgbouncer
       app: selinon-storages
-      component: postgres
-    name: postgres
+      component: pgbouncer
+    name: pgbouncer
   spec:
     ports:
     - port: 6432

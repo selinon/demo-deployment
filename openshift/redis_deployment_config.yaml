@@ -32,7 +32,6 @@ objects:
     selector:
       service: redis
 
-
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -63,23 +62,18 @@ objects:
             limits:
               memory: "512Mi"
               cpu: "750m"
-              #          readinessProbe:
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 10
-              #            timeoutSeconds: 10
-              #          livenessProbe:
-              #            # TODO: create liveness
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 60
-              #            timeoutSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 10
           volumeMounts:
             - mountPath: /data
               name: redis-volume

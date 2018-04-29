@@ -44,7 +44,6 @@ objects:
     selector:
       service: minio
 
-
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -80,23 +79,30 @@ objects:
             limits:
               memory: "512Mi"
               cpu: "750m"
-              #          readinessProbe:
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 10
-              #            timeoutSeconds: 10
-              #          livenessProbe:
-              #            # TODO: create liveness
-              #            httpGet:
-              #              path: '/'
-              #              port: 5555
-              #              scheme: HTTP
-              #            initialDelaySeconds: 5
-              #            periodSeconds: 60
-              #            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: '/minio/login'
+              port: 9000
+              scheme: HTTP
+              httpHeaders:
+                # Minio behaves differently based on user-agent.
+                - name: User-Agent
+                  value: Mozilla/5.0
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: '/minio/login'
+              port: 9000
+              scheme: HTTP
+              httpHeaders:
+                # Minio behaves differently based on user-agent.
+                - name: User-Agent
+                  value: Mozilla/5.0
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 10
           volumeMounts:
             - mountPath: /.minio
               name: minio-volume
