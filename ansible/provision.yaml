@@ -17,7 +17,7 @@
     POSTGRESQL_USER: selinon
     POSTGRESQL_DATABASE: selinon
     POSTGRESQL_PORT: 5432
-    POSTGRESQL_PORT: postgres
+    POSTGRESQL_HOST: postgres
     PGBOUNCER_HOST: pgbouncer
     PGBOUNCER_PORT: 6432
     MONGODB_USER: mongo
