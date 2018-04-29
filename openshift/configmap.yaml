@@ -26,6 +26,7 @@ objects:
     postgres-user: ${POSTGRESQL_USER}
     postgres-database: ${POSTGRESQL_DATABASE}
     postgres-port: ${POSTGRESQL_PORT}
+    postgres-host: ${POSTGRESQL_HOST}
     postgres-ssl: disable
     pgbouncer-host: ${PGBOUNCER_HOST}
     pgbouncer-port: ${PGBOUNCER_PORT}
@@ -50,6 +51,11 @@ parameters:
     displayName: PostgreSQL database port.
     required: true
     name: POSTGRESQL_PORT
+
+  - description: PostgreSQL database host.
+    displayName: PostgreSQL database host.
+    required: true
+    name: POSTGRESQL_HOST
 
   - description: pgbouncer host.
     displayName: pgbouncer host.
