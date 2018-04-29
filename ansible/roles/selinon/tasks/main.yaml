@@ -152,6 +152,39 @@
   - name: "Create redis-commander from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/redis-commander-deploymentconfig
 
+  # Use pgbouncer
+
+  - name: "Create pgbouncer ImageStream template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/image_stream.yaml
+
+  - name: "Create pgbouncer BuildConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/build_config.yaml
+
+  - name: "Create pgbouncer DeploymentConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/deployment_config.yaml
+
+  - name: "Create pgbouncer ImageStream from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-imagestream
+
+  - name: "Create pgbouncer BuildConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-buildconfig
+
+  - name: "Create pgbouncer DeploymentConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-deploymentconfig
+
+  #
+  # RabbitMQ broker
+  #
+   - name: "Create RabbitMQ ImageStream template"
+     command: oc create --namespace {{ SELINON_NAMESPACE }} \
+       --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/rabbitmq_deployment_config.yaml
+
+  - name: "Create RabbitMQ DeploymentConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/rabbitmq-deploymentconfig
+
 # TODO:
 #   * server
 #   * worker
