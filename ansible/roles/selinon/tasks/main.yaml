@@ -1,0 +1,109 @@
+---
+  - name: "Make sure Selinon project with name {{ SELINON_NAMESPACE }} exists"
+    command: "oc new-project {{ SELINON_NAMESPACE }}"
+    register: create_project
+    ignore_errors: true
+
+  - name: "Make sure we use project {{ SELINON_NAMESPACE }}"
+    command: "oc project {{ SELINON_NAMESPACE }}"
+    register: project_exists
+    ignore_errors: true # TODO remove
+
+  #
+  # Image streams for upstream images
+  #
+  - name: "Import Fedora s2i ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} registry.fedoraproject.org/f26/s2i-base:latest f26-s2i:latest"
+
+  - name: "Import CentOS7 s2i ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/centos/python-36-centos7:latest python-36-centos7:latest"
+
+  - name: "Import RabbitMQ ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/rabbitmq:3.7.4-management rabbitmq:3.7.4-management"
+
+  - name: "Import PostgreSQL ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/centos/postgresql-94-centos7 postgres:9.4"
+
+  - name: "Import Redis ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/redis:3.2.11 redis:3.2.11"
+
+  - name: "Import MongoDB ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/openshift/mongodb-24-centos7 mongo:2.4"
+
+  - name: "Import Minio ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/minio/minio:latest minio:latest"
+
+  - name: "Import Celery-Flower ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/crgwbr/docker-celery-flower celery-flower:latest"
+
+  - name: "Import Mongo-express ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/mongo-express mongo-express:0.45.0"
+
+  - name: "Import pgbouncer ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/kafka/pgbouncer:1.6.1 pgbouncer:1.6.1 "
+
+  - name: "Import Redis-commander ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/rediscommander/redis-commander redis-commander:latest"
+
+  - name: "Import pgweb ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/harrygulliford/pgweb pgweb:latest"
+
+  - name: "Import Sentry ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/sentry:8.21.0 sentry:8.21.0"
+
+  #
+  # Image streams for our images
+  #
+  - name: "Create API ImageStream template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/image_stream.yaml
+
+  - name: "Create API ImageStream from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/api-imagestream
+
+  - name: "Create worker ImageStream template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/templates/image_stream.yaml
+
+  - name: "Create worker ImageStream from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-imagestream
+
+  # Build configs for our apps
+  - name: "Create API BuildConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/build_config.yaml
+
+  - name: "Create API BuildConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/api-buildconfig
+
+  - name: "Create worker BuildConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/templates/build_config.yaml
+
+  - name: "Create worker BuildConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-buildconfig
+
+  # Deployment configs for our apps
+  - name: "Create API DeploymentConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/deployment_config.yaml
+
+  - name: "Create API DeploymentConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/api-deploymentconfig
+
+  - name: "Create worker DeploymentConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-worker/master/templates/deployment_config.yaml
+
+  - name: "Create worker DeploymentConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig
+
+  # Deployments of databases
+
+# TODO:
+#   * dc for storages
+#   * dc for storage viewers
+#   * server
+#   * worker
+#   * config maps
+#   * secrets

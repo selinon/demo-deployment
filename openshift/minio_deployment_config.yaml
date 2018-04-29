@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: minio-deploymentconfig
+  thoth: 1.0.0
+metadata:
+  name: minio-deploymentconfig
+  annotations:
+    description: Selinon Celery Flower
+    openshift.io/display-name: 'Selinon: Minio S3'
+    version: 1.0.0
+    tags: poc,selinon,minio,s3
+    template.openshift.io/documentation-url: https://github.com/selinon/
+    template.openshift.io/long-description: Selinon Minio S3 deployment configuration template.
+    template.openshift.io/provider-display-name: Fridolin Pokorny
+
+objects:
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: minio
+    labels:
+      app: selinon-storages
+      component: minio
+  spec:
+    to:
+      kind: Service
+      name: minio
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    labels:
+      service: minio
+      app: selinon-storages
+      component: minio
+    name: minio
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 9000
+    selector:
+      service: minio
+
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      service: minio
+      app: selinon-storages
+      component: minio
+    name: minio
+  spec:
+    replicas: 1
+    selector:
+      service: minio
+    template:
+      metadata:
+        labels:
+          service: minio
+      spec:
+        containers:
+        - env:
+          - name: MINIO_ACCESS_KEY
+            value: PCOMYKL7WQ8ZCESM0TH9
+          - name: MINIO_SECRET_KEY
+            value: 'aHDakH5CK/5LPM2kDnQX6BAlp9CyIOI9V3E+aU+S'
+          name: minio
+          args: ["server", "/data"]
+          ports:
+            - containerPort: 9000
+              protocol: TCP
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "750m"
+              #          readinessProbe:
+              #            httpGet:
+              #              path: '/'
+              #              port: 5555
+              #              scheme: HTTP
+              #            initialDelaySeconds: 5
+              #            periodSeconds: 10
+              #            timeoutSeconds: 10
+              #          livenessProbe:
+              #            # TODO: create liveness
+              #            httpGet:
+              #              path: '/'
+              #              port: 5555
+              #              scheme: HTTP
+              #            initialDelaySeconds: 5
+              #            periodSeconds: 60
+              #            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /.minio
+              name: minio-volume
+            - mountPath: /data
+              name: minio-data-volume
+        volumes:
+        - name: minio-volume
+          emptyDir: {}
+        - name: minio-data-volume
+          emptyDir: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - minio
+        from:
+          kind: ImageStreamTag
+          name: 'minio:latest'

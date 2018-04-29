@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: rabbitmq-deploymentconfig
+  thoth: 1.0.0
+metadata:
+  name: rabbitmq-deploymentconfig
+  annotations:
+    description: Selinon Celery Flower
+    openshift.io/display-name: 'Selinon: RabbitMQ'
+    version: 1.0.0
+    tags: poc,selinon,rabbitmq
+    template.openshift.io/documentation-url: https://github.com/selinon/
+    template.openshift.io/long-description: Selinon RabbitMQ deployment configuration template.
+    template.openshift.io/provider-display-name: Fridolin Pokorny
+
+objects:
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: rabbitmq
+    labels:
+      app: selinon-broker
+      component: rabbitmq
+  spec:
+    to:
+      kind: Service
+      name: rabbitmq
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    labels:
+      service: rabbitmq
+      app: selinon-broker
+      component: rabbitmq
+    name: rabbitmq
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 15672
+    selector:
+      service: rabbitmq
+
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      service: rabbitmq
+      app: selinon-broker
+      component: rabbitmq
+    name: rabbitmq
+  spec:
+    replicas: 1
+    selector:
+      service: rabbitmq
+    template:
+      metadata:
+        labels:
+          service: rabbitmq
+      spec:
+        containers:
+        - env:
+          name: rabbitmq
+          ports:
+            - containerPort: 15672
+              protocol: TCP
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1000m"
+            limits:
+              memory: "1024Mi"
+              cpu: "2000m"
+              #          readinessProbe:
+              #            httpGet:
+              #              path: '/'
+              #              port: 5555
+              #              scheme: HTTP
+              #            initialDelaySeconds: 5
+              #            periodSeconds: 10
+              #            timeoutSeconds: 10
+              #          livenessProbe:
+              #            # TODO: create liveness
+              #            httpGet:
+              #              path: '/'
+              #              port: 5555
+              #              scheme: HTTP
+              #            initialDelaySeconds: 5
+              #            periodSeconds: 60
+              #            timeoutSeconds: 10
+    test: false
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - rabbitmq
+        from:
+          kind: ImageStreamTag
+          name: 'rabbitmq:3.7.4-management'

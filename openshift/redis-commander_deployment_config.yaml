@@ -1,0 +1,111 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: redis-commander-deploymentconfig
+  thoth: 1.0.0
+metadata:
+  name: redis-commander-deploymentconfig
+  annotations:
+    description: Selinon Mongo Express
+    openshift.io/display-name: 'Selinon: Mongo Express'
+    version: 1.0.0
+    tags: poc,selinon,redis-commander
+    template.openshift.io/documentation-url: https://github.com/selinon/
+    template.openshift.io/long-description: Selinon Redis Commander deployment configuration template.
+    template.openshift.io/provider-display-name: Fridolin Pokorny
+
+objects:
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: redis-commander
+    labels:
+      app: selinon-storages
+      component: redis-commander
+  spec:
+    to:
+      kind: Service
+      name: redis-commander
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    labels:
+      service: redis-commander
+      app: selinon-storages
+      component: redis-commander
+    name: redis-commander
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      service: redis-commander
+
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      service: redis-commander
+      app: selinon-storages
+      component: redis-commander
+    name: redis-commander
+  spec:
+    replicas: 1
+    selector:
+      service: redis-commander
+    template:
+      metadata:
+        labels:
+          service: redis-commander
+      spec:
+        containers:
+        - env:
+          - name: REDIS_PORT
+            value: '27017'
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_DB
+            value: selinon
+          name: redis-commander
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "125m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+              #          readinessProbe:
+              #            httpGet:
+              #              path: '/'
+              #              port: 5555
+              #              scheme: HTTP
+              #            initialDelaySeconds: 5
+              #            periodSeconds: 10
+              #            timeoutSeconds: 10
+              #          livenessProbe:
+              #            # TODO: create liveness
+              #            httpGet:
+              #              path: '/'
+              #              port: 5555
+              #              scheme: HTTP
+              #            initialDelaySeconds: 5
+              #            periodSeconds: 60
+              #            timeoutSeconds: 10
+    test: false
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - redis-commander
+        from:
+          kind: ImageStreamTag
+          name: 'redis-commander:latest'

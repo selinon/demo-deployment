@@ -1,0 +1,15 @@
+---
+- name: Playbook to provision Selinon demo
+    - openshift
+    - selinon
+
+  hosts: localhost
+  vars:
+    openshift_master_url: "{{ lookup('env','OCP_URL') }}"
+    token: "{{ lookup('env','OCP_TOKEN') }}"
+    SELINON_NAMESPACE: "{{ lookup('env','SELINON_NAMESPACE') }}"
+
+  gather_facts: false
+  connection: local
+  roles:
+  - role: selinon
