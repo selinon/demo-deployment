@@ -67,7 +67,7 @@ objects:
             valueFrom:
               secretKeyRef:
                 name: selinon
-                key: s3-access-key
+                key: s3-key-id
           - name: MINIO_SECRET_KEY
             valueFrom:
               secretKeyRef:
