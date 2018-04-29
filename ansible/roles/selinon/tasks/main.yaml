@@ -98,11 +98,51 @@
   - name: "Create worker DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig
 
-  # Deployments of databases
+  # Deployments of storages
+
+  - name: "Create Minio S3 template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/minio_deployment_config.yaml
+
+  - name: "Create Minio S3 from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/minio-deploymentconfig
+
+  - name: "Create MongoDB template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/mongo_deployment_config.yaml
+
+  - name: "Create MongoDB from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/mongo-deploymentconfig
+
+  - name: "Create mongo-express template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/mongo-express_deployment_config.yaml
+
+  - name: "Create mongo-express from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/mongo-express-deploymentconfig
+
+  - name: "Create PostgreSQL template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/postgres_deployment_config.yaml
+
+  - name: "Create PostgreSQL from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/postgres-deploymentconfig
+
+  - name: "Create Redis template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/redis_deployment_config.yaml
+
+  - name: "Create Redis from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/redis-deploymentconfig
+
+  - name: "Create redis-commander template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/redis-commander_deployment_config.yaml
+
+  - name: "Create redis-commander from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/redis-commander-deploymentconfig
 
 # TODO:
-#   * dc for storages
-#   * dc for storage viewers
 #   * server
 #   * worker
 #   * config maps
