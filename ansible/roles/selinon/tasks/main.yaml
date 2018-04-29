@@ -38,9 +38,6 @@
   - name: "Import Mongo-express ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/mongo-express mongo-express:0.45.0"
 
-  - name: "Import pgbouncer ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/kafka/pgbouncer:1.6.1 pgbouncer:1.6.1 "
-
   - name: "Import Redis-commander ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/rediscommander/redis-commander redis-commander:latest"
 
