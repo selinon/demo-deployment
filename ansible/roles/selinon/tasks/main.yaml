@@ -206,9 +206,3 @@
 
   - name: "Create RabbitMQ DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/rabbitmq-deploymentconfig
-
-# TODO:
-#   * server
-#   * worker
-#   * config maps
-#   * secrets
