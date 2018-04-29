@@ -18,6 +18,9 @@
   - name: "Import CentOS7 s2i ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/centos/python-36-centos7:latest python-36-centos7:latest"
 
+  - name: "Import CentOS7 ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/centos:7 centos:7"
+
   - name: "Import RabbitMQ ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/rabbitmq:3.7.4-management rabbitmq:3.7.4-management"
 
