@@ -6,6 +6,47 @@
   - name: "Make sure we use project {{ SELINON_NAMESPACE }}"
     command: "oc project {{ SELINON_NAMESPACE }}"
 
+  # Deployment config and secrets
+
+  - name: "Create secrets template"
+    command: oc create --namespace {{ SELINON_NAMEPSACE }} \
+      --filename ../openshift/secret.yaml
+
+  - name: "Create secrets template"
+    command: oc new-app --template {{ SELINON_NAMEPSACE }}/selinon-secret \
+      -p S3_KEY_ID="{{ S3_KEY_ID }}" \
+      -p S3_SECRET_KEY="{{ S3_SECRET_KEY }}" \
+      -p MONGO_PASSWORD="{{ MONGO_PASSWORD }}" \
+      -p MONGO_ADMIN_PASSWORD="{{ MONGO_ADMIN_PASSWORD }}" \
+      -p POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}
+
+  - name: "Create ConfigMap template"
+    command: oc create --namespace {{ SELINON_NAMEPSACE }} \
+      --filename ../openshift/configmap.yaml
+
+  - name: "Create ConfigMap from template"
+    command: oc new-app --template {{ SELINON_NAMEPSACE }}/selinon-configmap
+      -p API_APP_SECRET="{{ API_APP_SECRET }}" \
+      -p POSTGRESQL_USER="{{ POSTGRESQL_USER }}" \
+      -p POSTGRESQL_DATABASE="{{ POSTGRESQL_DATABASE }}" \
+      -p POSTGRESQL_PORT="{{ POSTGRESQL_PORT }}" \
+      -p PGBOUNCER_HOST="{{ PGBOUNCER_HOST }}" \
+      -p PGBOUNCER_PORT="{{ PGBOUNCER_PORT }}" \
+      -p MONGODB_USER="{{ MONGODB_USER }}" \
+      -p MONGODB_DATABASE="{{ MONGODB_DATABASE }}" \
+      -p REDIS_PORT="{{ REDIS_PORT }}" \
+      -p REDIS_HOST="{{ REDIS_HOST }}" \
+      -p REDIS_DATABASE="{{ REDIS_DATABASE }}"
+
+  # API image stream
+
+  - name: "Create API ImageStream template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-api/master/openshift/image_stream.yaml
+
+  - name: "Create API ImageStream from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/api-imagestream
+
   # Image streams for upstream images
 
   - name: "Import Fedora s2i ImageStreamTags from upstream registry"

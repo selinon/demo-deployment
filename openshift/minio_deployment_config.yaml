@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 labels:
   template: minio-deploymentconfig
-  thoth: 1.0.0
+  selinon: 1.0.0
 metadata:
   name: minio-deploymentconfig
   annotations:
@@ -64,9 +64,15 @@ objects:
         containers:
         - env:
           - name: MINIO_ACCESS_KEY
-            value: PCOMYKL7WQ8ZCESM0TH9
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: s3-access-key
           - name: MINIO_SECRET_KEY
-            value: 'aHDakH5CK/5LPM2kDnQX6BAlp9CyIOI9V3E+aU+S'
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: s3-secret-key
           name: minio
           args: ["server", "/data"]
           ports:

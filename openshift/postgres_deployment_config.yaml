@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 labels:
   template: postgres-deploymentconfig
-  thoth: 1.0.0
+  selinon: 1.0.0
 metadata:
   name: postgres-deploymentconfig
   annotations:
@@ -51,11 +51,20 @@ objects:
         containers:
         - env:
           - name: POSTGRESQL_PASSWORD
-            value: postgres
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: postgres-password
           - name: POSTGRESQL_USER
-            value: user
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: postgres-user
           - name: POSTGRESQL_DATABASE
-            value: selinon
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: postgres-database
           name: postgres
           ports:
             - containerPort: 5432

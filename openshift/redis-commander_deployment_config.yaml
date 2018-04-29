@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 labels:
   template: redis-commander-deploymentconfig
-  thoth: 1.0.0
+  selinon: 1.0.0
 metadata:
   name: redis-commander-deploymentconfig
   annotations:
@@ -64,11 +64,21 @@ objects:
         containers:
         - env:
           - name: REDIS_PORT
-            value: '27017'
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: redis-port
           - name: REDIS_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: redis-host
             value: redis
           - name: REDIS_DB
-            value: selinon
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: redis-database
           name: redis-commander
           ports:
             - containerPort: 8081

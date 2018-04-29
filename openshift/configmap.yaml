@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 labels:
   template: selinon-configmap
-  thoth: 1.0.0
+  selinon: 1.0.0
 metadata:
   name: selinon-configmap
   annotations:
@@ -27,10 +27,11 @@ objects:
     postgres-user: ${POSTGRESQL_USER}
     postgres-database: ${POSTGRESQL_DATABASE}
     postgres-port: ${POSTGRESQL_PORT}
+    postgres-ssl: disable
     pgbouncer-host: ${PGBOUNCER_HOST}
     pgbouncer-port: ${PGBOUNCER_PORT}
-    mongodb-user: ${MONGODB_USER}
-    mongodb-database: ${MONGODB_DATABASE}
+    mongo-user: ${MONGODB_USER}
+    mongo-database: ${MONGODB_DATABASE}
     redis-port: ${REDIS_PORT}
     redis-host: ${REDIS_HOST}
     redis-database: ${REDIS_DATABASE}
@@ -40,65 +41,53 @@ parameters:
     displayName: Message broker URL.
     required: true
     name: BROKER_URL
-    default: rabbitmq
 
   - description: PostgreSQL user.
     displayName: PostgreSQL user.
     required: true
     name: POSTGRESQL_USER
-    default: selinon
 
   - description: PosgtreSQL database name.
     displayName: PostgreSQL database name.
     required: true
     name: POSTGRESQL_DATABASE
-    default: selinon
 
   - description: PostgreSQL database port.
     displayName: PostgreSQL database port.
     required: true
     name: POSTGRESQL_PORT
-    default: '5432'
 
   - description: pgbouncer host.
     displayName: pgbouncer host.
     required: true
     name: PGBOUNCER_HOST
-    default: pgbouncer
 
   - description: pgbouncer port.
     displayName: pgbouncer port.
     required: true
     name: PGBOUNCER_PORT
-    default: '6432'
 
   - description: MongoDB user.
     displayName: MongoDB user.
     required: true
     name: MONGODB_USER
-    default: selinon
 
   - description: MongoDB database name.
     displayName: MongoDB database name.
     required: true
     name: MONGODB_DATABASE
-    default: selinon
 
   - description: Redis port.
     displayName: Redis port.
     required: true
     name: REDIS_PORT
-    default: '6379'
 
   - description: Redis host.
     displayName: Redis host.
     required: true
     name: REDIS_HOST
-    default: redis
 
   - description: Redis database name.
     displayName: Redis database name.
     required: true
     name: REDIS_DATABASE
-    default: selinon
-

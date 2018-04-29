@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 labels:
   template: pgbouncer-deploymentconfig
-  thoth: 1.0.0
+  selinon: 1.0.0
 metadata:
   name: pgbouncer-deploymentconfig
   annotations:
@@ -51,13 +51,25 @@ objects:
         containers:
         - env:
           - name: POSTGRES_PORT
-            value: tcp://postgres:5432
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: postgres-port
           - name: POSTGRES_ENV_POSTGRES_USER
-            value: user
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: postgres-user
           - name: POSTGRES_ENV_POSTGRES_DB
-            value: selinon
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: postgres-database
           - name: POSTGRES_ENV_POSTGRES_PASSWORD
-            value: postgres
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: postgres-password
           name: pgbouncer
           ports:
             - containerPort: 6432

@@ -8,6 +8,22 @@
     openshift_master_url: "{{ lookup('env','OCP_URL') }}"
     token: "{{ lookup('env','OCP_TOKEN') }}"
     SELINON_NAMESPACE: "{{ lookup('env','SELINON_NAMESPACE') }}"
+    API_APP_SECRET: secret
+    S3_KEY_ID: PCOMYKL7WQ8ZCESM0TH9
+    S3_SECRET_KEY: 'aHDakH5CK/5LPM2kDnQX6BAlp9CyIOI9V3E+aU+S'
+    MONGO_PASSWORD: selinon
+    MONGO_ADMIN_PASSWORD: admin
+    POSTGRES_PASSWORD: selinon
+    POSTGRESQL_USER: selinon
+    POSTGRESQL_DATABASE: 5432
+    POSTGRESQL_PORT: 5432
+    PGBOUNCER_HOST: pgbouncer
+    PGBOUNCER_PORT: 6432
+    MONGODB_USER: mongo
+    MONGODB_DATABASE: mongo
+    REDIS_PORT: '6379'
+    REDIS_HOST: redis
+    REDIS_DATABASE: redis
 
   gather_facts: false
   connection: local

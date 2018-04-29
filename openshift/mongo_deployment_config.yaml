@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 labels:
   template: mongo-flower-deploymentconfig
-  thoth: 1.0.0
+  selinon: 1.0.0
 metadata:
   name: mongo-deploymentconfig
   annotations:
@@ -52,13 +52,25 @@ objects:
         containers:
         - env:
           - name: MONGODB_USER
-            value: user
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: mongo-user
           - name: MONGODB_PASSWORD
-            value: mongo
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: mongo-password
           - name: MONGODB_DATABASE
-            value: selinon
+            valueFrom:
+              configMapKeyRef:
+                name: selinon
+                key: mongo-database
           - name: MONGODB_ADMIN_PASSWORD
-            value: mongo
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: mongo-admin-password
           name: mongo
           ports:
             - containerPort: 27017
