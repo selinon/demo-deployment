@@ -1,17 +1,13 @@
 ---
   - name: "Make sure Selinon project with name {{ SELINON_NAMESPACE }} exists"
     command: "oc new-project {{ SELINON_NAMESPACE }}"
-    register: create_project
     ignore_errors: true
 
   - name: "Make sure we use project {{ SELINON_NAMESPACE }}"
     command: "oc project {{ SELINON_NAMESPACE }}"
-    register: project_exists
-    ignore_errors: true # TODO remove
 
-  #
   # Image streams for upstream images
-  #
+
   - name: "Import Fedora s2i ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} registry.fedoraproject.org/f26/s2i-base:latest f26-s2i:latest"
 
@@ -54,9 +50,8 @@
   - name: "Import Sentry ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/sentry:8.21.0 sentry:8.21.0"
 
-  #
   # Image streams for our images
-  #
+
   - name: "Create API ImageStream template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
       --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/image_stream.yaml
@@ -72,6 +67,7 @@
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-imagestream
 
   # Build configs for our apps
+
   - name: "Create API BuildConfig template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
       --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/build_config.yaml
@@ -87,6 +83,7 @@
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-buildconfig
 
   # Deployment configs for our apps
+
   - name: "Create API DeploymentConfig template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
       --filename https://raw.githubusercontent.com/selinon/demo-api/master/templates/deployment_config.yaml
