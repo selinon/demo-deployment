@@ -172,9 +172,9 @@
   #
   # RabbitMQ broker
   #
-   - name: "Create RabbitMQ ImageStream template"
-     command: oc create --namespace {{ SELINON_NAMESPACE }} \
-       --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/rabbitmq_deployment_config.yaml
+  - name: "Create RabbitMQ ImageStream template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/rabbitmq_deployment_config.yaml
 
   - name: "Create RabbitMQ DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/rabbitmq-deploymentconfig
