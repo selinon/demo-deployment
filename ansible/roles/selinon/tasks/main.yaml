@@ -131,6 +131,13 @@
   - name: "Create PostgreSQL from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/postgres-deploymentconfig
 
+  - name: "Create pgweb template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/pgweb_deployment_config.yaml
+
+  - name: "Create PostgreSQL from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgweb-deploymentconfig
+
   - name: "Create Redis template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
       --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/redis_deployment_config.yaml
