@@ -23,7 +23,6 @@ objects:
     labels:
       app: selinon
   data:
-    broker-url: ${BROKER_URL}
     postgres-user: ${POSTGRESQL_USER}
     postgres-database: ${POSTGRESQL_DATABASE}
     postgres-port: ${POSTGRESQL_PORT}
@@ -37,11 +36,6 @@ objects:
     redis-database: ${REDIS_DATABASE}
 
 parameters:
-  - description: URL to message broker to be used. Defaults to RabbitMQ. Adjust for others - e.g. SQS.
-    displayName: Message broker URL.
-    required: true
-    name: BROKER_URL
-
   - description: PostgreSQL user.
     displayName: PostgreSQL user.
     required: true

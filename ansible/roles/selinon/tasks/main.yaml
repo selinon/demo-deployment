@@ -1,32 +1,30 @@
 ---
   - name: "Make sure Selinon project with name {{ SELINON_NAMESPACE }} exists"
-    command: "oc new-project {{ SELINON_NAMESPACE }}"
+    command: oc new-project {{ SELINON_NAMESPACE }}
     ignore_errors: true
 
   - name: "Make sure we use project {{ SELINON_NAMESPACE }}"
-    command: "oc project {{ SELINON_NAMESPACE }}"
+    command: oc project {{ SELINON_NAMESPACE }}
 
   # Deployment config and secrets
 
   - name: "Create secrets template"
-    command: oc create --namespace {{ SELINON_NAMEPSACE }} \
-      --filename ../openshift/secret.yaml
+    command: oc create --namespace {{ SELINON_NAMESPACE }} --filename ../openshift/secret.yaml
 
   - name: "Create secrets template"
-    command: oc new-app --template {{ SELINON_NAMEPSACE }}/selinon-secret \
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/selinon-secret \
+      -p API_APP_SECRET="{{ API_APP_SECRET }}" \
       -p S3_KEY_ID="{{ S3_KEY_ID }}" \
       -p S3_SECRET_KEY="{{ S3_SECRET_KEY }}" \
       -p MONGO_PASSWORD="{{ MONGO_PASSWORD }}" \
       -p MONGO_ADMIN_PASSWORD="{{ MONGO_ADMIN_PASSWORD }}" \
-      -p POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}
+      -p POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}"
 
   - name: "Create ConfigMap template"
-    command: oc create --namespace {{ SELINON_NAMEPSACE }} \
-      --filename ../openshift/configmap.yaml
+    command: oc create --namespace {{ SELINON_NAMESPACE }} --filename ../openshift/configmap.yaml
 
   - name: "Create ConfigMap from template"
-    command: oc new-app --template {{ SELINON_NAMEPSACE }}/selinon-configmap
-      -p API_APP_SECRET="{{ API_APP_SECRET }}" \
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/selinon-configmap \
       -p POSTGRESQL_USER="{{ POSTGRESQL_USER }}" \
       -p POSTGRESQL_DATABASE="{{ POSTGRESQL_DATABASE }}" \
       -p POSTGRESQL_PORT="{{ POSTGRESQL_PORT }}" \
@@ -37,15 +35,6 @@
       -p REDIS_PORT="{{ REDIS_PORT }}" \
       -p REDIS_HOST="{{ REDIS_HOST }}" \
       -p REDIS_DATABASE="{{ REDIS_DATABASE }}"
-
-  # API image stream
-
-  - name: "Create API ImageStream template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-api/master/openshift/image_stream.yaml
-
-  - name: "Create API ImageStream from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/api-imagestream
 
   # Image streams for upstream images
 
@@ -84,9 +73,6 @@
 
   - name: "Import pgweb ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/harrygulliford/pgweb pgweb:latest"
-
-  - name: "Import Sentry ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/sentry:8.21.0 sentry:8.21.0"
 
   # Image streams for our images
 
@@ -170,7 +156,7 @@
     command: oc create --namespace {{ SELINON_NAMESPACE }} \
       --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/pgweb_deployment_config.yaml
 
-  - name: "Create PostgreSQL from template"
+  - name: "Create pgweb from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/pgweb-deploymentconfig
 
   - name: "Create Redis template"

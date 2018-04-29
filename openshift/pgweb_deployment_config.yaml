@@ -88,7 +88,6 @@ objects:
               secretKeyRef:
                 name: selinon
                 key: postgres-password
-            value: postgres
           - name: DB_SSL
             valueFrom:
               configMapKeyRef:

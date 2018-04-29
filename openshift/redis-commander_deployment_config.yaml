@@ -73,7 +73,6 @@ objects:
               configMapKeyRef:
                 name: selinon
                 key: redis-host
-            value: redis
           - name: REDIS_DB
             valueFrom:
               configMapKeyRef:
