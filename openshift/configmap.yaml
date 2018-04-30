@@ -35,7 +35,7 @@ objects:
     redis-port: ${REDIS_PORT}
     redis-host: ${REDIS_HOST}
     redis-database: ${REDIS_DATABASE}
-    broker-url: amqp://:${RABBITMQ_HOST}:${RABBITMQ_PORT}
+    broker-url: amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}
     result-backend-url: ${RESULT_BACKEND_URL}
 
 parameters:
