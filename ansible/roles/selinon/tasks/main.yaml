@@ -124,7 +124,12 @@
       --filename https://raw.githubusercontent.com/selinon/demo-worker/master/openshift/deployment_config.yaml
 
   - name: "Create worker DeploymentConfig from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig \
+      -p WORKER_NAME='worker'
+
+  - name: "Create worker-dispatcher DeploymentConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig \
+      -p WORKER_NAME='worker-dispatcher'
 
   # Deployments of storages
 
