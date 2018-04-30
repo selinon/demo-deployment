@@ -25,6 +25,9 @@
     REDIS_PORT: '6379'
     REDIS_HOST: redis
     REDIS_DATABASE: redis
+    RABBITMQ_HOST: rabbitmq
+    RABBITMQ_PORT: '5672'
+    RESULT_BACKEND_URL: 'redis://redis:6379/0'
 
   gather_facts: false
   connection: local

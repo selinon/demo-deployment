@@ -35,8 +35,25 @@ objects:
     redis-port: ${REDIS_PORT}
     redis-host: ${REDIS_HOST}
     redis-database: ${REDIS_DATABASE}
+    broker-url: amqp://:${RABBITMQ_HOST}:${RABBITMQ_PORT}
+    result-backend: ${RESULT_BACKEND_URL}
 
 parameters:
+  - description: RabbitMQ host.
+    displayName: RabbitMQ host.
+    required: true
+    name: RABBITMQ_HOST
+
+  - description: RabbitMQ port.
+    displayName: RabbitMQ port.
+    required: true
+    name: RABBITMQ_PORT
+
+  - description: Celery's result backend.
+    displayName: Celery result backend.
+    required: true
+    name: RESULT_BACKEND_URL
+
   - description: PostgreSQL user.
     displayName: PostgreSQL user.
     required: true
@@ -91,3 +108,4 @@ parameters:
     displayName: Redis database name.
     required: true
     name: REDIS_DATABASE
+
