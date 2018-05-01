@@ -28,6 +28,7 @@
     RABBITMQ_HOST: rabbitmq
     RABBITMQ_PORT: '5672'
     RESULT_BACKEND_URL: 'redis://redis:6379/0'
+    TRAVIS_CI_TOKEN: "{{ lookup('env','TRAVIS_CI_TOKEN') }}"
 
   gather_facts: false
   connection: local

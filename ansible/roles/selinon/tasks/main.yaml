@@ -39,6 +39,7 @@
       -p RABBITMQ_HOST="{{ RABBITMQ_HOST }}" \
       -p RABBITMQ_PORT="{{ RABBITMQ_PORT }}" \
       -p RESULT_BACKEND_URL="{{ RESULT_BACKEND_URL }}"
+      -p TRAVIS_CI_TOKEN="{{ TRAVIS_CI_TOKEN }}"
 
   # Image streams for upstream images
 
