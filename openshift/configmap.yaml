@@ -37,7 +37,6 @@ objects:
     redis-database: ${REDIS_DATABASE}
     broker-url: amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}
     result-backend-url: ${RESULT_BACKEND_URL}
-    travis-ci-token: ${TRAVIS_CI_TOKEN}
 
 parameters:
   - description: RabbitMQ host.
@@ -110,7 +109,3 @@ parameters:
     required: true
     name: REDIS_DATABASE
 
-  - description: Travis CI token needed for gathering Travis CI logs in flows.
-    displayName: Travis CI token.
-    required: true
-    name: ${TRAVIS_CI_TOKEN}

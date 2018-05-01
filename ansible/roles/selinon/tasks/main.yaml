@@ -18,7 +18,8 @@
       -p S3_SECRET_KEY="{{ S3_SECRET_KEY }}" \
       -p MONGO_PASSWORD="{{ MONGO_PASSWORD }}" \
       -p MONGO_ADMIN_PASSWORD="{{ MONGO_ADMIN_PASSWORD }}" \
-      -p POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}"
+      -p POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}" \
+      -p TRAVIS_CI_TOKEN="{{ TRAVIS_CI_TOKEN }}"
 
   - name: "Create ConfigMap template"
     command: oc create --namespace {{ SELINON_NAMESPACE }} --filename ../openshift/configmap.yaml
@@ -39,7 +40,6 @@
       -p RABBITMQ_HOST="{{ RABBITMQ_HOST }}" \
       -p RABBITMQ_PORT="{{ RABBITMQ_PORT }}" \
       -p RESULT_BACKEND_URL="{{ RESULT_BACKEND_URL }}"
-      -p TRAVIS_CI_TOKEN="{{ TRAVIS_CI_TOKEN }}"
 
   # Image streams for upstream images
 
