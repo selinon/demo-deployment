@@ -125,11 +125,13 @@
 
   - name: "Create worker DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig \
-      -p WORKER_NAME='worker'
+      -p WORKER_NAME='worker' \
+      -p SELINON_DISPATCHER='0'
 
   - name: "Create worker-dispatcher DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/worker-deploymentconfig \
-      -p WORKER_NAME='worker-dispatcher'
+      -p WORKER_NAME='worker-dispatcher' \
+      -p SELINON_DISPATCHER='1'
 
   # Deployments of storages
 
