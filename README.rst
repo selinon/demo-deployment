@@ -4,7 +4,7 @@ demo-deployment
 
 Deployment of Selinon's demo into OpenShift
 
-To do the deployment, run the following commands. Note that you have to have Travis CLI installed and you have to be logged in using `travis login <https://github.com/travis-ci/travis.rb#readme>`_.
+To do the deployment, run the following commands. Note that you have to have Travis CLI installed and you have to be logged in to Travis CI using `travis login <https://github.com/travis-ci/travis.rb#readme>`_ and to OpenShift cluster using ``oc login <URL>``.
 
 ::
 
