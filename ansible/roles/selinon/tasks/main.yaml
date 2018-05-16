@@ -55,30 +55,6 @@
   - name: "Import RabbitMQ ImageStreamTags from upstream registry"
     command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/rabbitmq:3.7.4-management rabbitmq:3.7.4-management"
 
-  - name: "Import PostgreSQL ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/centos/postgresql-94-centos7 postgres:9.4"
-
-  - name: "Import Redis ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/redis:3.2.11 redis:3.2.11"
-
-  - name: "Import MongoDB ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/openshift/mongodb-24-centos7 mongo:2.4"
-
-  - name: "Import Minio ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/minio/minio:latest minio:latest"
-
-  - name: "Import Celery-Flower ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/crgwbr/docker-celery-flower celery-flower:latest"
-
-  - name: "Import Mongo-express ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/mongo-express mongo-express:0.45.0"
-
-  - name: "Import Redis-commander ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/rediscommander/redis-commander redis-commander:latest"
-
-  - name: "Import pgweb ImageStreamTags from upstream registry"
-    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/harrygulliford/pgweb pgweb:latest"
-
   # Image streams for our images
 
   - name: "Create API ImageStream template"
@@ -134,80 +110,6 @@
       -p WORKER_NAME='worker-dispatcher' \
       -p SELINON_DISPATCHER='1'
 
-  # Deployments of storages
-
-  - name: "Create Minio S3 template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/minio_deployment_config.yaml
-
-  - name: "Create Minio S3 from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/minio-deploymentconfig
-
-  - name: "Create MongoDB template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/mongo_deployment_config.yaml
-
-  - name: "Create MongoDB from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/mongo-deploymentconfig
-
-  - name: "Create mongo-express template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/mongo-express_deployment_config.yaml
-
-  - name: "Create mongo-express from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/mongo-express-deploymentconfig
-
-  - name: "Create PostgreSQL template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/postgres_deployment_config.yaml
-
-  - name: "Create PostgreSQL from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/postgres-deploymentconfig
-
-  - name: "Create pgweb template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/pgweb_deployment_config.yaml
-
-  - name: "Create pgweb from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgweb-deploymentconfig
-
-  - name: "Create Redis template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/redis_deployment_config.yaml
-
-  - name: "Create Redis from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/redis-deploymentconfig
-
-  - name: "Create redis-commander template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/redis-commander_deployment_config.yaml
-
-  - name: "Create redis-commander from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/redis-commander-deploymentconfig
-
-  # Use pgbouncer
-
-  - name: "Create pgbouncer ImageStream template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/image_stream.yaml
-
-  - name: "Create pgbouncer BuildConfig template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/build_config.yaml
-
-  - name: "Create pgbouncer DeploymentConfig template"
-    command: oc create --namespace {{ SELINON_NAMESPACE }} \
-      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/deployment_config.yaml
-
-  - name: "Create pgbouncer ImageStream from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-imagestream
-
-  - name: "Create pgbouncer BuildConfig from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-buildconfig
-
-  - name: "Create pgbouncer DeploymentConfig from template"
-    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-deploymentconfig
-
   #
   # RabbitMQ broker
   #
@@ -217,3 +119,112 @@
 
   - name: "Create RabbitMQ DeploymentConfig from template"
     command: oc new-app --template {{ SELINON_NAMESPACE }}/rabbitmq-deploymentconfig
+
+  #
+  # Storage and databases
+  #
+
+  - name: "Import PostgreSQL ImageStreamTags from upstream registry"
+    command: "oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/centos/postgresql-94-centos7 postgres:9.4"
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgbouncer ImageStream template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/image_stream.yaml
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgbouncer BuildConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/build_config.yaml
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgbouncer DeploymentConfig template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-pgbouncer/master/openshift/deployment_config.yaml
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgbouncer ImageStream from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-imagestream
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgbouncer BuildConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-buildconfig
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgbouncer DeploymentConfig from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgbouncer-deploymentconfig
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create PostgreSQL template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/postgres_deployment_config.yaml
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create PostgreSQL from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/postgres-deploymentconfig
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Import pgweb ImageStreamTags from upstream registry"
+    command: oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/harrygulliford/pgweb pgweb:latest
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgweb template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/pgweb_deployment_config.yaml
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create pgweb from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/pgweb-deploymentconfig
+    when: DEPLOY_POSTGRESQL
+
+  - name: "Create Minio S3 template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/minio_deployment_config.yaml
+    when: DEPLOY_MINIO
+
+  - name: "Create Minio S3 from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/minio-deploymentconfig
+    when: DEPLOY_MINIO
+
+  - name: "Import Minio ImageStreamTags from upstream registry"
+    command: oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/minio/minio:latest minio:latest
+    when: DEPLOY_MINIO
+
+  - name: "Create MongoDB template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/mongo_deployment_config.yaml
+    when: DEPLOY_MONGODB
+
+  - name: "Create MongoDB from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/mongo-deploymentconfig
+    when: DEPLOY_MONGODB
+
+  - name: "Create mongo-express template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/mongo-express_deployment_config.yaml
+    when: DEPLOY_MONGODB
+
+  - name: "Create mongo-express from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/mongo-express-deploymentconfig
+    when: DEPLOY_MONGODB
+
+  - name: "Import MongoDB ImageStreamTags from upstream registry"
+    command: oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/openshift/mongodb-24-centos7 mongo:2.4
+    when: DEPLOY_MONGODB
+
+  - name: "Create Redis template"
+    command: oc create --namespace {{ SELINON_NAMESPACE }} \
+      --filename https://raw.githubusercontent.com/selinon/demo-deployment/master/openshift/redis_deployment_config.yaml
+    when: DEPLOY_REDIS
+
+  - name: "Create Redis from template"
+    command: oc new-app --template {{ SELINON_NAMESPACE }}/redis-deploymentconfig
+    when: DEPLOY_REDIS
+
+  - name: "Import Redis ImageStreamTags from upstream registry"
+    command: oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/redis:3.2.11 redis:3.2.11
+    when: DEPLOY_REDIS
+
+  - name: "Import Mongo-express ImageStreamTags from upstream registry"
+    command: oc tag --namespace {{ SELINON_NAMESPACE }} docker.io/library/mongo-express mongo-express:0.45.0
+    when: DEPLOY_MONGODB

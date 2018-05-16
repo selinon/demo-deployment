@@ -30,6 +30,15 @@
     RESULT_BACKEND_URL: 'redis://redis:6379/0'
     TRAVIS_CI_TOKEN: "{{ lookup('env','TRAVIS_CI_TOKEN') }}"
 
+    # Configure databases you would like to have deployed below.
+    # Redis is our result backend.
+    DEPLOY_REDIS: true
+    DEPLOY_POSTGRESQL: false
+    DEPLOY_MONGODB: false
+    # We use Minio S3 in demo.
+    DEPLOY_MINIO: true
+    DEPLOY_FLOWER: false
+
   gather_facts: false
   connection: local
   roles:
