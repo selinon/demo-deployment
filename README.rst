@@ -14,3 +14,9 @@ To do the deployment, run the following commands. Note that you have to have Tra
   export TRAVIS_CI_TOKEN=$(travis token | awk '{ print $NF }')
   ansible-playbook ansible/provision.yaml
 
+If you would like to deploy different storages and databases, see main Ansible configuration file and adjust deployed databases.
+
+
+.. figure:: https://raw.githubusercontent.com/selinon/demo-deployment/master/fig/openshift.png
+   :alt: OpenShift deployment
+   :align: center
