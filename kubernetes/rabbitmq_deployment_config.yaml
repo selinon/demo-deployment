@@ -1,0 +1,68 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    service: rabbitmq
+    app: selinon-broker
+    component: rabbitmq
+  name: rabbitmq
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 15672
+    name: http
+  - port: 5672
+    protocol: TCP
+    targetPort: 5672
+    name: ampq
+  selector:
+    service: rabbitmq
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: rabbitmq
+    app: selinon-broker
+    component: rabbitmq
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: rabbitmq
+  template:
+    metadata:
+      labels:
+        service: rabbitmq
+    spec:
+      containers:
+      - env:
+        name: rabbitmq
+        image: 'rabbitmq:3.7.4-management'
+        ports:
+          - containerPort: 15672
+            protocol: TCP
+          - containerPort: 5672
+            protocol: TCP
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "1000m"
+          limits:
+            memory: "1024Mi"
+            cpu: "2000m"
+        readinessProbe:
+          tcpSocket:
+            port: 15672
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 15672
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 10

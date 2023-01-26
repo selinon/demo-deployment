@@ -1,0 +1,67 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    service: pgweb
+    app: selinon-storages
+    component: pgweb
+  name: pgweb
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    service: pgweb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: pgweb
+    app: selinon-storages
+    component: pgweb
+  name: pgweb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: pgweb
+  template:
+    metadata:
+      labels:
+        service: pgweb
+    spec:
+      containers:
+      - env:
+        -  name: PGWEB_DATABASE_URL
+           value: postgres://selinon:selinon@postgres:5432/selinon?sslmode=disable
+        name: pgweb
+        image: 'sosedoff/pgweb:latest'
+        ports:
+          - containerPort: 8081
+            protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "125m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: '/'
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: '/'
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 10

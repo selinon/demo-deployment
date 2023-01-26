@@ -1,0 +1,94 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    service: minio
+    app: selinon-storages
+    component: minio
+  name: minio
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    service: minio
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: minio
+    app: selinon-storages
+    component: minio
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: minio
+  template:
+    metadata:
+      labels:
+        service: minio
+    spec:
+      containers:
+      - env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: selinon
+              key: s3-key-id
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: selinon
+              key: s3-secret-key
+        name: minio
+        image: 'minio/minio:latest'
+        args: ["server", "/data"]
+        ports:
+          - containerPort: 9000
+            protocol: TCP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "750m"
+        readinessProbe:
+          httpGet:
+            path: '/minio/login'
+            port: 9000
+            scheme: HTTP
+            httpHeaders:
+              # Minio behaves differently based on user-agent.
+              - name: User-Agent
+                value: Mozilla/5.0
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: '/minio/login'
+            port: 9000
+            scheme: HTTP
+            httpHeaders:
+              # Minio behaves differently based on user-agent.
+              - name: User-Agent
+                value: Mozilla/5.0
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 10
+        volumeMounts:
+          - mountPath: /.minio
+            name: minio-volume
+          - mountPath: /data
+            name: minio-data-volume
+      volumes:
+      - name: minio-volume
+        emptyDir: {}
+      - name: minio-data-volume
+        emptyDir: {}

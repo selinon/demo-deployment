@@ -1,0 +1,21 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: selinon
+  labels:
+    app: selinon
+data:
+  postgres-user: selinon
+  postgres-database: selinon
+  postgres-port: '5432'
+  postgres-host: 'postgres'
+  postgres-ssl: disable
+  pgbouncer-host: pgbouncer
+  pgbouncer-port: '6432'
+  mongo-user: mongo
+  mongo-database: mongo
+  redis-port: '6379'
+  redis-host: redis
+  redis-database: redis
+  broker-url: amqp://rabbitmq:5672
+  result-backend-url: 'redis://redis:6379/0'

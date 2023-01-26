@@ -1,0 +1,80 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    service: redis-commander
+    app: selinon-storages
+    component: redis-commander
+  name: redis-commander
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    service: redis-commander
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: redis-commander
+    app: selinon-storages
+    component: redis-commander
+  name: redis-commander
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: redis-commander
+  template:
+    metadata:
+      labels:
+        service: redis-commander
+    spec:
+      containers:
+      - env:
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: selinon
+              key: redis-port
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: selinon
+              key: redis-host
+        - name: REDIS_DB
+          valueFrom:
+            configMapKeyRef:
+              name: selinon
+              key: redis-database
+        name: redis-commander
+        image: 'rediscommander/redis-commander:latest'
+        ports:
+          - containerPort: 8081
+            protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "125m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: '/'
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: '/'
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 10

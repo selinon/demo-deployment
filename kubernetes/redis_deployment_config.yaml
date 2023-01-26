@@ -1,0 +1,68 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    service: redis
+    app: selinon-storages
+    component: redis
+  name: redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+    name: redis
+  selector:
+    service: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: redis
+    app: selinon-storages
+    component: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: redis
+  template:
+    metadata:
+      labels:
+        service: redis
+    spec:
+      containers:
+      - env:
+        name: redis
+        image: 'redis:3.2.11'
+        ports:
+          - containerPort: 6379
+            protocol: TCP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "750m"
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 10
+        volumeMounts:
+          - mountPath: /data
+            name: redis-volume
+      volumes:
+      - name: redis-volume
+        emptyDir: {}

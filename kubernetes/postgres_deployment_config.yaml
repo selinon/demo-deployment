@@ -1,0 +1,82 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    service: postgres
+    app: selinon-storages
+    component: postgres
+  name: postgres
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    service: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: postgres
+    app: selinon-storages
+    component: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: postgres
+  template:
+    metadata:
+      labels:
+        service: postgres
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: selinon
+              key: postgres-password
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: selinon
+              key: postgres-user
+        - name: POSTGRES_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: selinon
+              key: postgres-database
+        name: postgres
+        image: 'postgres:9.4'
+        ports:
+          - containerPort: 5432
+            protocol: TCP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "750m"
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 10
+        volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: postgres-volume
+      volumes:
+      - name: postgres-volume
+        emptyDir: {}
